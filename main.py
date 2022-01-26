@@ -116,8 +116,8 @@ def send_mail(path):
     file = open('mails.txt', 'r')
     data = file.readlines()
     for mail in data:
-        fromaddr = 'bottest757@gmail.com'  # Change your mail here
-        password = 'qwerty123#'  # Your mails password
+        fromaddr = ''  # Change your mail here
+        password = ''  # Your mails password
         toaddr = mail.strip()
         msg = MIMEMultipart()
         msg['From'] = fromaddr
