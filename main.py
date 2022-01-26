@@ -11,6 +11,7 @@ from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 from email.mime.base import MIMEBase
 from email import encoders
+import os
 
 THRESHOLD = 500  # audio levels not normalised. needs adjustmens
 CHUNK_SIZE = 1024
@@ -92,7 +93,6 @@ def record():
     stream.close()
     p.terminate()
 
-    # we trim before normalize as threshhold applies to un-normalized wave (as well as is_silent() function)
     data_all = trim(data_all)
     data_all = normalize(data_all)
     return sample_width, data_all
@@ -123,10 +123,10 @@ def send_mail(path):
         msg['From'] = fromaddr
 
         msg['To'] = toaddr
-        msg['Subject'] = "Noise Detected: " + datetime.datetime.now().strftime("%Y%m%d-%H%M%S")
+        msg['Subject'] = "Noise Detected: " + datetime.datetime.now().strftime("%Y-%m-%d-%H:%M:%S")
 
-        body = " Somebody is in your home making some noise!" + datetime.datetime.now().strftime("%Y%m%d-%H%M%S") + \
-            "Do you want to call 911? You can find the audio evidience in the attachments."
+        body = " Somebody is in your home making some noise! " + datetime.datetime.now().strftime("%Y-%m-%d-%H:%M:%S") + \
+            " Do you want to call 911? You can find the audio evidience in the attachments."
 
 
         msg.attach(MIMEText(body, 'plain')) 
@@ -153,6 +153,8 @@ def send_mail(path):
 
 if __name__ == '__main__':
     print("Program starting in silence and it will start recording when somebody make a noise in your room!")
-    record_to_file('alert.wav')
-    print("Alert - noise written to alert.wav")
-    send_mail('alert.wav')
+    while 1 == 1:    
+        record_to_file('alert.wav')
+        print("Alert - noise written to alert.wav")
+        send_mail('alert.wav')
+        os.remove("alert.wav")
