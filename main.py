@@ -6,6 +6,7 @@ import pyaudio
 import wave
 import smtplib
 import ssl
+import datetime
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 from email.mime.base import MIMEBase
@@ -122,11 +123,13 @@ def send_mail(path):
         msg['From'] = fromaddr
 
         msg['To'] = toaddr
-        msg['Subject'] = "This is a noise alert!"
+        msg['Subject'] = "Noise Detected: " + datetime.datetime.now().strftime("%Y%m%d-%H%M%S")
 
-        body = " Somebody is in your home making some noise! Do you want to call 911? You can find the audio evidience in the attachments." 
+        body = " Somebody is in your home making some noise!" + datetime.datetime.now().strftime("%Y%m%d-%H%M%S") + \
+            "Do you want to call 911? You can find the audio evidience in the attachments."
 
-        msg.attach(MIMEText(body, 'plain'))
+
+        msg.attach(MIMEText(body, 'plain')) 
         filename = path
         attachment = open(path, "rb")
         p = MIMEBase('application', 'octet-stream')
@@ -135,7 +138,7 @@ def send_mail(path):
         encoders.encode_base64(p)
 
         p.add_header('Content-Disposition',
-                     "attachment; filename= %s" % filename)
+             "attachment; filename= %s" % filename)
 
         msg.attach(p)
         port = 587
